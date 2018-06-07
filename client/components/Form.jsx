@@ -15,8 +15,7 @@ class Form extends React.Component {
     submitUser(e) {
         console.log("submit", this.state.newUser)
         e.preventDefault()
-        this.validationFunction()
-            this.props.dispatch(postUserRequest(this.state.newUser))
+        this.props.dispatch(postUserRequest(this.state.newUser))
     }
 
 // this function updates the 'newUser' part of the state every time something is entered into a field
@@ -32,6 +31,11 @@ class Form extends React.Component {
     return (
         <div>
            <h3>Hello, world.</h3>
+            <form onSubmit={this.submitUser.bind(this)}>
+                <input onChange={this.updateUserDetails.bind(this)}placeholder="Image Description*" id="image_description" className='error' name='image_description'/>
+                <input onChange={this.updateUserDetails.bind(this)}placeholder="Image URL*" id="url" className='error' name='url'/>
+                <input  id="submitbutton" type='submit' value='ADD ARTWORK TO DATABASE'/>
+           </form>
         </div>  
     )
     }

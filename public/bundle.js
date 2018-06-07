@@ -23259,7 +23259,6 @@ var Form = function (_React$Component) {
         value: function submitUser(e) {
             console.log("submit", this.state.newUser);
             e.preventDefault();
-            this.validationFunction();
             this.props.dispatch((0, _emails.postUserRequest)(this.state.newUser));
         }
 
@@ -23283,6 +23282,13 @@ var Form = function (_React$Component) {
                     'h3',
                     null,
                     'Hello, world.'
+                ),
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.submitUser.bind(this) },
+                    _react2.default.createElement('input', { onChange: this.updateUserDetails.bind(this), placeholder: 'Image Description*', id: 'image_description', className: 'error', name: 'image_description' }),
+                    _react2.default.createElement('input', { onChange: this.updateUserDetails.bind(this), placeholder: 'Image URL*', id: 'url', className: 'error', name: 'url' }),
+                    _react2.default.createElement('input', { id: 'submitbutton', type: 'submit', value: 'ADD ARTWORK TO DATABASE' })
                 )
             );
         }

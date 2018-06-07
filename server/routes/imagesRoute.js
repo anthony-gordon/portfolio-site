@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
     let db = req.app.get('db')
     console.log("in post")
-    imagesDb.addUser(req.body, db)
+    imagesDb.addImage(req.body, db)
             .then(user => res.json(user))
         .catch(err => res.status(500).send(err.message + 'SERVER ERROR'))  
 })
