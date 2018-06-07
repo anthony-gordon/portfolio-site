@@ -1,41 +1,48 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import {postUserRequest} from '../actions/emails'
+import {postImageRequest, getImagesRequest} from '../actions/images'
 
 class Form extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            newUser: {},
+            newImage: {},
         }
     }
 
-// If the validaion function does not return false, it will be allowed to post the data to the database
-
-    submitUser(e) {
-        console.log("submit", this.state.newUser)
-        e.preventDefault()
-        this.props.dispatch(postUserRequest(this.state.newUser))
+    componentDidMount(){
+        this.props.dispatch(getImagesRequest())
     }
 
-// this function updates the 'newUser' part of the state every time something is entered into a field
+    submitImage(e) {
+        console.log("submit", this.state.newImage)
+        e.preventDefault()
+        this.props.dispatch(postImageRequest(this.state.newImage))
+    }
 
-    updateUserDetails(e){
-        console.log("update", this.state.newUser)
-        let newUser = this.state.newUser
-        newUser[e.target.name] = e.target.value
-        this.setState({newUser})
+    updateImageDetails(e){
+        console.log("update", this.state.newImage)
+        let newImage = this.state.newImage
+        newImage[e.target.name] = e.target.value
+        this.setState({newImage})
     } 
 
     render(){
+        console.log(this.props.images)
     return (
         <div>
            <h3>Hello, world.</h3>
-            <form onSubmit={this.submitUser.bind(this)}>
-                <input onChange={this.updateUserDetails.bind(this)}placeholder="Image Description*" id="image_description" className='error' name='image_description'/>
-                <input onChange={this.updateUserDetails.bind(this)}placeholder="Image URL*" id="url" className='error' name='url'/>
+            <form onSubmit={this.submitImage.bind(this)}>
+                <input onChange={this.updateImageDetails.bind(this)}placeholder="Image Description*" id="image_description" className='error' name='image_description'/>
+                <input onChange={this.updateImageDetails.bind(this)}placeholder="Image URL*" id="url" className='error' name='url'/>
                 <input  id="submitbutton" type='submit' value='ADD ARTWORK TO DATABASE'/>
            </form>
+           <div>
+                <h3>Artwork Urls:</h3>
+                <ul>
+                {this.props.images.map((image => <li><img src={image.url}/></li>))}
+                </ul>
+            </div>
         </div>  
     )
     }
@@ -43,6 +50,7 @@ class Form extends React.Component {
 
 function mapStateToProps(state){     
     return {
+        images: state.images
     }
 }
 export default 

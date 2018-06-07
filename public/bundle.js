@@ -23140,45 +23140,18 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = __webpack_require__(10);
 
-var _users = __webpack_require__(63);
+var _images = __webpack_require__(74);
 
-var _users2 = _interopRequireDefault(_users);
+var _images2 = _interopRequireDefault(_images);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = (0, _redux.combineReducers)({
-  users: _users2.default
+  images: _images2.default
 });
 
 /***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var users = function users() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var action = arguments[1];
-
-  // let newState = [...state]
-  switch (action.type) {
-
-    case 'ADD_USER':
-      console.log("reducer", action.user);
-      return action.user;
-
-    default:
-      return state;
-  }
-};
-
-exports.default = users;
-
-/***/ }),
+/* 63 */,
 /* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23228,7 +23201,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(15);
 
-var _emails = __webpack_require__(66);
+var _images = __webpack_require__(73);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23247,34 +23220,35 @@ var Form = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this, props));
 
         _this.state = {
-            newUser: {}
+            newImage: {}
         };
         return _this;
     }
 
-    // If the validaion function does not return false, it will be allowed to post the data to the database
-
     _createClass(Form, [{
-        key: 'submitUser',
-        value: function submitUser(e) {
-            console.log("submit", this.state.newUser);
-            e.preventDefault();
-            this.props.dispatch((0, _emails.postUserRequest)(this.state.newUser));
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.props.dispatch((0, _images.getImagesRequest)());
         }
-
-        // this function updates the 'newUser' part of the state every time something is entered into a field
-
     }, {
-        key: 'updateUserDetails',
-        value: function updateUserDetails(e) {
-            console.log("update", this.state.newUser);
-            var newUser = this.state.newUser;
-            newUser[e.target.name] = e.target.value;
-            this.setState({ newUser: newUser });
+        key: 'submitImage',
+        value: function submitImage(e) {
+            console.log("submit", this.state.newImage);
+            e.preventDefault();
+            this.props.dispatch((0, _images.postImageRequest)(this.state.newImage));
+        }
+    }, {
+        key: 'updateImageDetails',
+        value: function updateImageDetails(e) {
+            console.log("update", this.state.newImage);
+            var newImage = this.state.newImage;
+            newImage[e.target.name] = e.target.value;
+            this.setState({ newImage: newImage });
         }
     }, {
         key: 'render',
         value: function render() {
+            console.log(this.props.images);
             return _react2.default.createElement(
                 'div',
                 null,
@@ -23285,10 +23259,30 @@ var Form = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                     'form',
-                    { onSubmit: this.submitUser.bind(this) },
-                    _react2.default.createElement('input', { onChange: this.updateUserDetails.bind(this), placeholder: 'Image Description*', id: 'image_description', className: 'error', name: 'image_description' }),
-                    _react2.default.createElement('input', { onChange: this.updateUserDetails.bind(this), placeholder: 'Image URL*', id: 'url', className: 'error', name: 'url' }),
+                    { onSubmit: this.submitImage.bind(this) },
+                    _react2.default.createElement('input', { onChange: this.updateImageDetails.bind(this), placeholder: 'Image Description*', id: 'image_description', className: 'error', name: 'image_description' }),
+                    _react2.default.createElement('input', { onChange: this.updateImageDetails.bind(this), placeholder: 'Image URL*', id: 'url', className: 'error', name: 'url' }),
                     _react2.default.createElement('input', { id: 'submitbutton', type: 'submit', value: 'ADD ARTWORK TO DATABASE' })
+                ),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'h3',
+                        null,
+                        'Artwork Urls:'
+                    ),
+                    _react2.default.createElement(
+                        'ul',
+                        null,
+                        this.props.images.map(function (image) {
+                            return _react2.default.createElement(
+                                'li',
+                                null,
+                                _react2.default.createElement('img', { src: image.url })
+                            );
+                        })
+                    )
                 )
             );
         }
@@ -23298,46 +23292,14 @@ var Form = function (_React$Component) {
 }(_react2.default.Component);
 
 function mapStateToProps(state) {
-    return {};
+    return {
+        images: state.images
+    };
 }
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(Form);
 
 /***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.addUser = undefined;
-exports.postUserRequest = postUserRequest;
-
-var _superagent = __webpack_require__(67);
-
-var _superagent2 = _interopRequireDefault(_superagent);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var addUser = exports.addUser = function addUser(user) {
-    return {
-        type: 'ADD_USER',
-        user: user
-    };
-};
-
-function postUserRequest(user) {
-    console.log("action", user);
-    return function (dispatch) {
-        _superagent2.default.post('/api/v1').send(user).then(dispatch(addUser(user))).catch(function (err) {
-            dispatch(showError(err.message));
-        });
-    };
-}
-
-/***/ }),
+/* 66 */,
 /* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25379,6 +25341,89 @@ Agent.prototype._setDefaults = function(req) {
 
 module.exports = Agent;
 
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.addImage = exports.receiveImages = undefined;
+exports.getImagesRequest = getImagesRequest;
+exports.postImageRequest = postImageRequest;
+
+var _superagent = __webpack_require__(67);
+
+var _superagent2 = _interopRequireDefault(_superagent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var receiveImages = exports.receiveImages = function receiveImages(images) {
+  return {
+    type: 'RECEIVE_IMAGES',
+    images: images
+  };
+};
+
+function getImagesRequest() {
+  return function (dispatch) {
+    return _superagent2.default.get('/api/v1').then(function (res) {
+      dispatch(receiveImages(res.body));
+    }).catch(function (err) {
+      dispatch(showError(err.message));
+    });
+  };
+}
+
+var addImage = exports.addImage = function addImage(image) {
+  return {
+    type: 'ADD_IMAGE',
+    image: image
+  };
+};
+
+function postImageRequest(image) {
+  console.log("action", image);
+  return function (dispatch) {
+    _superagent2.default.post('/api/v1').send(image).then(dispatch(addImage(image))).catch(function (err) {
+      dispatch(showError(err.message));
+    });
+  };
+}
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var images = function images() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var action = arguments[1];
+
+  // let newState = [...state]
+  switch (action.type) {
+    case 'RECEIVE_IMAGES':
+      return action.images;
+    case 'ADD_IMAGE':
+      return [].concat(_toConsumableArray(state), [action.image]);
+    default:
+      return state;
+  }
+};
+
+exports.default = images;
 
 /***/ })
 /******/ ]);
